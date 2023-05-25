@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:http/http.dart' as http;
 
@@ -15,19 +16,10 @@ class HTTPClient {
   }
 
   Future<http.Response> post(Map<String, String> body) async {
-    final jsonBody = json.encode(body); 
-    return await http.post(
-      Uri.parse(_baseURL + _path), body:jsonBody
-      /**
-       * final body = {
-          'name': 'Bob',
-          'age': '87',
-        };
-        final jsonString = json.encode(body);
-        final uri = Uri.http('www.example.com', '/path');
-        final headers = {HttpHeaders.contentTypeHeader: 'application/json'};
-        final response = await http.post(uri, headers: headers, body: jsonString);
-       */
-    );
+    final uri = Uri.parse(_baseURL + _path);
+    final jsonString = json.encode(body);
+    final headers = {HttpHeaders.contentTypeHeader: 'application/json'};
+    final response = await http.post(uri, headers: headers, body: jsonString);
+    return response;
   }
 }

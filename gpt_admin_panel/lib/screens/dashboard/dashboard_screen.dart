@@ -43,7 +43,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   List<Widget> serviceMetrics(BuildContext context) {
     var healthState = widget.presenter.healthStatus;
     return [
-      const TitleLarge('Métricas [Widget> serviço'),
+      const TitleLarge('Métricas de serviço'),
       Row(
         children: [
           MediumCard(
