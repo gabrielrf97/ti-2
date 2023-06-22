@@ -1,5 +1,9 @@
 package com.powerchat.gpt;
 
+import com.azure.core.util.BinaryData;
+import com.azure.storage.blob.*;
+import com.azure.storage.blob.specialized.BlockBlobClient;
+import com.azure.storage.common.StorageSharedKeyCredential;
 import com.powerchat.gpt.controller.FacebookWebhookController;
 import com.powerchat.gpt.controller.json_mapper_models.BananaImage;
 import com.powerchat.gpt.core.ModelType;
@@ -9,23 +13,36 @@ import com.powerchat.gpt.model.Plan;
 import com.powerchat.gpt.model.Question;
 import com.powerchat.gpt.model.Subscription;
 import com.powerchat.gpt.model.User;
+import com.powerchat.gpt.utils.ByteBufferEncoder;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.WritableResource;
+import org.springframework.util.StreamUtils;
+import org.springframework.web.bind.annotation.*;
+
+import java.io.*;
+import java.nio.charset.Charset;
+
 import java.io.IOException;
 import java.net.http.HttpClient;
+import java.nio.ByteBuffer;
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.util.Base64;
+import java.util.Locale;
 import java.util.UUID;
 
 @SpringBootApplication
 public class GptApplication {
 
 	public static void main(String[] args) throws  Exception{
-		SpringApplication.run(GptApplication.class, args);
+//		SpringApplication.run(GptApplication.class, args);
 //		FacebookWebhookController facebookWebhookController = new FacebookWebhookController();
 //		facebookWebhookController.getFacebookWebhookMessage("5531971647983");
-		//requestBananaApi();
+		requestBananaApi();
 		//requestOpenAICompletion();
 //		ModelType type = PythonBridge.classify("Desenhe um retrato do Winston Churchill");
 //		System.out.println(type);
@@ -80,8 +97,30 @@ public class GptApplication {
 		System.out.println(response);
 	}
 	static void requestBananaApi() throws IOException, InterruptedException {
-		BananaHttpClient client = new BananaHttpClient();
-		BananaImage response = client.requestBananaDevCompletion("texto");
-		System.out.println(response);
+
+
+		String accountName ="powerchatimg";
+		String accountKey = "+8V+SYWbxWmjVruKh1y390BmUoJnAEv4RT8RnnUd+pTlvFFQJUn0oskzWQf5sAtF4MnyP9iiPP/G+AStYgx4KQ==";
+		String token = "?sv=2022-11-02&ss=bfqt&srt=c&sp=rwdlacupiytfx&se=2023-06-22T03:25:21Z&st=2023-06-21T19:25:21Z&spr=https&sig=7vIx6kFT1cY5264G9BGLY2Hqjat%2BIdm%2BocyZGB%2FPIws%3D";
+		StorageSharedKeyCredential credential = new StorageSharedKeyCredential(accountName, accountKey);
+		String endpoint = String.format(Locale.ROOT, "https://%s.blob.core.windows.net", accountName);
+		BlobServiceClient storageClient = new BlobServiceClientBuilder().endpoint(endpoint).credential(credential).buildClient();
+		BlobContainerClient blobContainerClient = storageClient.getBlobContainerClient("teste" + System.currentTimeMillis());
+		blobContainerClient.create();
+		BlockBlobClient blobClient = blobContainerClient.getBlobClient("HelloWorld.txt").getBlockBlobClient();
+		String data = "Hello world!";
+		Object StandardCharsets = null;
+		InputStream dataStream = new ByteArrayInputStream(data.getBytes());
+		blobClient.upload(dataStream, data.length());
+		blobContainerClient.listBlobs()
+				.forEach(blobItem -> System.out.println("Blob name: " + blobItem.getName() + ", Snapshot: " + blobItem.getSnapshot()));
+		dataStream.close();
+//		blobClient.delete();
+//
+//		/*
+//		 * Delete the container we created earlier.
+//		 */
+//		blobContainerClient.delete();
+
 	}
 }

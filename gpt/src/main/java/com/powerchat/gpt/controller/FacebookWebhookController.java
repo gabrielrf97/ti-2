@@ -11,8 +11,8 @@ import com.powerchat.gpt.controller.json_mapper_models.BananaImage;
 import com.powerchat.gpt.controller.json_mapper_models.WhatsAppBusinessAccount;
 import com.powerchat.gpt.core.ModelType;
 import com.powerchat.gpt.core.PythonBridge;
-import com.powerchat.gpt.core.resource_upload.ResourceType;
-import com.powerchat.gpt.core.resource_upload.ResourceUploader;
+//import com.powerchat.gpt.core.resource_upload.ResourceType;
+//import com.powerchat.gpt.core.resource_upload.ResourceUploader;
 import com.powerchat.gpt.utils.ByteBufferEncoder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -61,13 +61,13 @@ public class FacebookWebhookController {
                 messageController.sendReplyMessage(phoneNumber, gptResponse);
             }
             case image -> {
-                BananaHttpClient bananaHttpClient = new BananaHttpClient();
-                messageController.sendReplyMessage(phoneNumber, "Uma imagem está sendo gerada");
-                BananaImage bananaImage = bananaHttpClient.requestBananaDevCompletion(message);
-                ByteBuffer imageBytes = ByteBufferEncoder.fromBase64(bananaImage.base64());
-                ResourceUploader uploader = new ResourceUploader();
-                String assetURL = uploader.uploadAssetAndGenerateURLAddress(imageBytes, ResourceType.image);
-                messageController.sendReplyImage(phoneNumber, assetURL);
+//                BananaHttpClient bananaHttpClient = new BananaHttpClient();
+//                messageController.sendReplyMessage(phoneNumber, "Uma imagem está sendo gerada");
+//                BananaImage bananaImage = bananaHttpClient.requestBananaDevCompletion(message);
+//                ByteBuffer imageBytes = ByteBufferEncoder.fromBase64(bananaImage.base64());
+//                ResourceUploader uploader = new ResourceUploader();
+//                String assetURL = uploader.uploadAssetAndGenerateURLAddress(imageBytes, ResourceType.image);
+//                messageController.sendReplyImage(phoneNumber, assetURL);
             }
         }
     }
